@@ -19,7 +19,6 @@ export default function List() {
   useEffect(() => {
       const getCharacters = async () => {
             const res = await fetch(`https://www.officeapi.dev/api/characters/`);
-            console.log(res);
             const { data } = await res.json();
             const characterData = data.map((character) => ({
                 id: character._id,

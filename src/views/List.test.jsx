@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { setupServer }from 'msw/node';
 import { rest } from 'msw';
 import List from './List';
+import userEvent from '@testing-library/user-event';
 
 const apiData = { 
     data:[
@@ -25,5 +26,21 @@ describe('List', () => {
         );
         const person = await screen.findByText('Jim Halpert');
         expect(person).toBeInTheDocument();
+    })
+
+    it('tests search function', async () => {
+        render(
+            <List />
+        );
+        await screen.findByText('Jim Halpert');
+
+        const search = await screen.getByPlaceholderText('Search for a Character');
+        userEvent.type(search, 'jim');
+
+
+        return waitFor(() => {
+            const result = screen.getByText('Jim Halpert');
+            expect(result).toBeInTheDocument();
+        })
     })
 })
