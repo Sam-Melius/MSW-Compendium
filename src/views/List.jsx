@@ -4,9 +4,17 @@ export default function List() {
   const [characters, setCharacters] = useState([]);
   const [results, setResults] = useState([]);
   const [search, setSearch] = useState('');
-  const [searchBy, setSerachBy] = useState('characters');
+  const [ loading, setLoading] = useState(true);
+  
+  const searching = !!search.length;
+  const list = searching ? results : characters;
 
-  const list = characters;
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+    const filteredSearch = characters.filter((character) => 
+    character.name.toLowerCase().includes(event.target.value.toLowerCase().trim()));
+    setResults(filteredSearch);
+}
 
   useEffect(() => {
       const getCharacters = async () => {
@@ -18,6 +26,7 @@ export default function List() {
                 name: `${character.firstname} ${character.lastname}`
             }));
             setCharacters(characterData);
+            setLoading(false);
   };
       getCharacters();
 }, []);
@@ -25,17 +34,25 @@ export default function List() {
   return (
     <>
     <h1>List of Characters</h1>
+    {loading ? (
+        <p>Loading</p>
+    ) : (
     <>
-    <ul>
-        {list.map((character) => {
-            return (
-                <li key={character.name}>
-                    {character.name}
-                </li>
-            )
-        })}
-    </ul>
-    </>
+        <input
+                    placeholder="Search for a Character"
+                    value={search}
+                    onChange={(e) => {handleSearch(e)}} />
+        <ul>
+            {list.map((character) => {
+                return (
+                    <li key={character.id}>
+                        {character.name}
+                    </li>
+                )
+            })}
+        </ul>
+        </>)}
+    
     </>
   )
 }
